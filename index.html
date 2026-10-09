@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Путь Самурая: Тайны Причастий</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #FFE5EC 0%, #E0F7FA 50%, #F3E5F5 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .font-russo {
+            font-family: 'Russo One', cursive;
+        }
+        
+        /* Пиксельные эффекты */
+        .pixel-border {
+            box-shadow: 
+                -4px 0 0 0 rgba(0,0,0,0.2),
+                4px 0 0 0 rgba(0,0,0,0.2),
+                0 -4px 0 0 rgba(0,0,0,0.2),
+                0 4px 0 0 rgba(0,0,0,0.2);
+        }
+        
+        .pixel-shadow {
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.15);
+        }
+        
+        /* Анимации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(255,182,193,0.8)); }
+            50% { filter: drop-shadow(0 0 20px rgba(255,182,193,1)); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(5deg); }
+            100% { transform: scale(1); }
+        }
+        
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-glow { animation: glow 2s ease-in-out infinite; }
+        .animate-slide-in { animation: slideIn 0.5s ease-out; }
+        .animate-celebrate { animation: celebrate 0.6s ease-in-out; }
+        
+        /* Кнопки */
+        .btn-primary {
+            background: linear-gradient(135deg, #FFB6C1, #FF69B4);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 44px;
+            border: 3px solid rgba(255,255,255,0.5);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,105,180,0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #98D8C8, #7FCDCD);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 44px;
+            border: 3px solid rgba(255,255,255,0.5);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(152,216,200,0.4);
+        }
+        
+        /* Карточки заданий */
+        .task-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255,255,255,0.8);
+        }
+        
+        /* Прогресс бар */
+        .progress-bar {
+            height: 20px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFB6C1, #DDA0DD, #98D8C8);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        /* Drag and Drop стили */
+        .draggable {
+            cursor: grab;
+            padding: 8px 16px;
+            background: #FFE5EC;
+            border-radius: 8px;
+            margin: 4px;
+            display: inline-block;
+            border: 2px solid #FFB6C1;
+        }
+        
+        .draggable:active {
+            cursor: grabbing;
+        }
+        
+        .drop-zone {
+            min-height: 60px;
+            background: rgba(152,216,200,0.2);
+            border: 3px dashed #98D8C8;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        
+        .drop-zone.drag-over {
+            background: rgba(152,216,200,0.4);
+            border-color: #7FCDCD;
+        }
+        
+        /* Частицы сакуры */
+        .sakura-petal {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #FFB6C1, #FF69B4);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: celebrate 0.5s ease;
+        }
+        
+        /* Поля ввода */
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid #FFB6C1;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #FF69B4;
+            box-shadow: 0 0 10px rgba(255,105,180,0.3);
+        }
+        
+        /* Чекбоксы и радио */
+        .option-label {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255,255,255,0.8);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .option-label:hover {
+            background: rgba(255,182,193,0.3);
+            border-color: #FFB6C1;
+        }
+        
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        /* Canvas контейнер */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    
+    <!-- Титульный экран -->
+    <div id="titleScreen" class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="text-center animate-float">
+            <h1 class="font-russo text-5xl md:text-7xl text-pink-500 mb-4 pixel-shadow">
+                ПУТЬ САМУРАЯ
+            </h1>
+            <p class="text-2xl text-purple-600 mb-2">Тайны Причастий</p>
+            <p class="text-lg text-teal-600 mb-8">Квест по русскому языку для 7 класса</p>
+            
+            <div class="bg-white/80 rounded-2xl p-6 mb-8 max-w-md mx-auto">
+                <p class="text-gray-700 mb-4">
+                    🌸 Добро пожаловать, юный воин! Тебя ждёт путешествие через 10 священных локаций Японии. 
+                    Чтобы стать настоящим мастером слова, тебе предстоит разгадать тайны причастий.
+                </p>
+                <p class="text-sm text-gray-600">
+                    Собери все свитки мудрости и открой секрет древнего искусства речи!
+                </p>
+            </div>
+            
+            <button onclick="startGame()" class="btn-primary text-xl px-8 py-4">
+                Начать Путешествие ⚔️
+            </button>
+        </div>
+    </div>
+
+    <!-- Экран карты -->
+    <div id="mapScreen" class="hidden min-h-screen p-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="font-russo text-4xl text-center text-purple-600 mb-6">Карта Путешествия</h2>
+            
+            <div class="progress-bar mb-6">
+                <div id="progressBar" class="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="locationsGrid">
+                <!-- Локации будут генерироваться JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Экран задания -->
+    <div id="taskScreen" class="hidden min-h-screen p-4">
+        <div class="max-w-3xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="backToMap()" class="btn-secondary">← Назад</button>
+                <span id="taskNumber" class="font-russo text-2xl text-purple-600"></span>
+            </div>
+            
+            <div id="taskContainer" class="task-card">
+                <!-- Задание будет загружаться сюда -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Финальный экран -->
+    <div id="finalScreen" class="hidden min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="text-center animate-celebrate">
+            <h1 class="font-russo text-5xl text-pink-500 mb-4">Поздравляем!</h1>
+            <div class="bg-white/90 rounded-2xl p-8 max-w-2xl mx-auto mb-8">
+                <p class="text-2xl text-purple-600 mb-4">🎉 Ты стал Мастером Причастий! 🎉</p>
+                <div id="finalScore" class="text-4xl font-bold text-teal-600 mb-4"></div>
+                <p id="finalMessage" class="text-lg text-gray-700 mb-4"></p>
+                
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <div class="bg-pink-100 rounded-xl p-4">
+                        <p class="text-sm text-gray-600">Правильных ответов</p>
+                        <p id="correctAnswers" class="text-2xl font-bold text-pink-600"></p>
+                    </div>
+                    <div class="bg-teal-100 rounded-xl p-4">
+                        <p class="text-sm text-gray-600">Свитков собрано</p>
+                        <p id="scrollsCollected" class="text-2xl font-bold text-teal-600"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="restartGame()" class="btn-primary text-xl px-8 py-4">
+                Играть Снова 🔄
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно успеха -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="text-6xl mb-4">✨</div>
+            <h3 class="font-russo text-3xl text-pink-500 mb-4">Отлично!</h3>
+            <p id="successMessage" class="text-lg text-gray-700 mb-6"></p>
+            <button onclick="closeModal('successModal')" class="btn-primary">Продолжить</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно ошибки -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <div class="text-6xl mb-4">💭</div>
+            <h3 class="font-russo text-3xl text-purple-500 mb-4">Подумай ещё!</h3>
+            <p id="errorMessage" class="text-lg text-gray-700 mb-6"></p>
+            <button onclick="closeModal('errorModal')" class="btn-secondary">Попробовать снова</button>
+        </div>
+    </div>
+
+    <script>
+        // Данные игры
+        const gameData = {
+            currentLevel: 0,
+            score: 0,
+            correctAnswers: 0,
+            scrollsCollected: 0,
+            locations: [
+                { name: "Храм Сакуры", icon: "🌸", completed: false },
+                { name: "Бамбуковая Роща", icon: "🎋", completed: false },
+                { name: "Гора Фудзи", icon: "🗻", completed: false },
+                { name: "Чайный Дом", icon: "🍵", completed: false },
+                { name: "Рыбный Рынок", icon: "🐟", completed: false },
+                { name: "Сад Камней", icon: "🪨", completed: false },
+                { name: "Мост Влюблённых", icon: "🌉", completed: false },
+                { name: "Библиотека Мудрецов", icon: "📚", completed: false },
+                { name: "Кузница Мастера", icon: "⚒️", completed: false },
+                { name: "Замок Императора", icon: "🏯", completed: false }
+            ],
+            tasks: [
+                {
+                    type: "choice",
+                    question: "Какое слово является причастием?",
+                    options: ["бежать", "бегущий", "бег", "побег"],
+                    correct: 1,
+                    explanation: "Причастие — это особая форма глагола, обозначающая признак предмета по действию. 'Бегущий' отвечает на вопрос 'какой?' и образовано от глагола 'бежать'."
+                },
+                {
+                    type: "fill",
+                    question: "Вставь пропущенную букву: читающ__ (причастие)",
+                    answer: "ий",
+                    explanation: "В действительных причастиях настоящего времени после основы на согласную пишется суффикс -ущ-/-ющ- или -ащ-/-ящ-. Здесь: читающ-ий."
+                },
+                {
+                    type: "match",
+                    question: "Установи соответствие между причастием и его видом:",
+                    pairs: [
+                        { left: "читающий", right: "НСВ" },
+                        { left: "прочитавший", right: "СВ" },
+                        { left: "пишущий", right: "НСВ" },
+                        { left: "написавший", right: "СВ" }
+                    ],
+                    explanation: "Причастия сохраняют вид глагола, от которого образованы. НСВ (несовершенный вид) — читающий, пишущий. СВ (совершенный вид) — прочитавший, написавший."
+                },
+                {
+                    type: "truefalse",
+                    question: "Верно ли утверждение: 'Причастие изменяется по родам, числам и падежам'?",
+                    answer: true,
+                    explanation: "Да, верно! Причастие как прилагательное изменяется по родам (читаемый, читаемая), числам (читаемый, читаемые) и падежам (читаемого, читаемому)."
+                },
+                {
+                    type: "correct",
+                    question: "Исправь ошибку в предложении: 'Девочка, читающый книгу, сидела у окна.'",
+                    answer: "читающая",
+                    explanation: "Ошибка в окончании причастия. 'Девочка' — женский род, единственное число, поэтому правильно: 'читающая' (окончание -ая)."
+                },
+                {
+                    type: "order",
+                    question: "Расставь слова в правильном порядке, чтобы получилось причастие:",
+                    words: ["щий", "чита", "ю"],
+                    correctOrder: ["чита", "ю", "щий"],
+                    explanation: "Правильная последовательность: основа 'чита-' + суффикс '-ю-' + суффикс '-щ-' + окончание '-ий' = читающий."
+                },
+                {
+                    type: "open",
+                    question: "Образуй страдательное причастие прошедшего времени от глагола 'писать'",
+                    answer: ["написанный", "написанная", "написанное", "написанные"],
+                    explanation: "Страдательное причастие прошедшего времени образуется с помощью суффиксов -нн-, -енн-, -т-. От 'писать' (СВ) → написанный."
+                },
+                {
+                    type: "punctuation",
+                    question: "Расставь знаки препинания: Мальчик читающий книгу подошёл к нам",
+                    answer: "Мальчик, читающий книгу, подошёл к нам",
+                    explanation: "Причастный оборот 'читающий книгу' стоит после определяемого слова 'мальчик', поэтому выделяется запятыми с обеих сторон."
+                },
+                {
+                    type: "morphology",
+                    question: "Определи грамматические признаки причастия 'прочитанная': вид, время, залог",
+                    answer: "СВ, прош., страд.",
+                    alternatives: ["совершенный вид, прошедшее время, страдательный залог", "СВ прошедшее страдательный"],
+                    explanation: "'Прочитанная' — совершенный вид (прочитать), прошедшее время (суффикс -нн-), страдательный залог (обозначает признак предмета, подвергшегося действию)."
+                },
+                {
+                    type: "code",
+                    question: "Разгадай шифр: каждая буква заменена на следующую в алфавите. Расшифруй причастие: 'чтббкый'",
+                    answer: "читающий",
+                    explanation: "Если каждую букву заменить на предыдущую в алфавите: ч→ч, т→т, б→а, б→а, к→ю, й→щ, ы→и, й→й. Получается: читающий."
+                }
+            ]
+        };
+
+        // Инициализация Canvas для частиц
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Создание частиц сакуры
+        function createSakuraParticle() {
+            return {
+                x: Math.random() * canvas.width,
+                y: -20,
+                size: Math.random() * 10 + 5,
+                speedY: Math.random() * 2 + 1,
+                speedX: Math.random() * 2 - 1,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 2 - 1,
+                opacity: Math.random() * 0.5 + 0.3
+            };
+        }
+
+        function updateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (particles.length < 30 && Math.random() < 0.1) {
+                particles.push(createSakuraParticle());
+            }
+            
+            particles.forEach((p, index) => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+                
+                if (p.y > canvas.height) {
+                    particles.splice(index, 1);
+                    return;
+                }
+                
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.globalAlpha = p.opacity;
+                ctx.fillStyle = '#FFB6C1';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+            
+            requestAnimationFrame(updateParticles);
+        }
+        updateParticles();
+
+        // Навигация
+        function showScreen(screenId) {
+            ['titleScreen', 'mapScreen', 'taskScreen', 'finalScreen'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function startGame() {
+            gameData.currentLevel = 0;
+            gameData.score = 0;
+            gameData.correctAnswers = 0;
+            gameData.scrollsCollected = 0;
+            gameData.locations.forEach(loc => loc.completed = false);
+            renderMap();
+            showScreen('mapScreen');
+        }
+
+        function renderMap() {
+            const grid = document.getElementById('locationsGrid');
+            grid.innerHTML = '';
+            
+            gameData.locations.forEach((loc, index) => {
+                const div = document.createElement('div');
+                div.className = `task-card cursor-pointer transition-all hover:scale-105 ${loc.completed ? 'opacity-50' : ''}`;
+                div.onclick = () => openTask(index);
+                
+                div.innerHTML = `
+                    <div class="text-center">
+                        <div class="text-4xl mb-2">${loc.icon}</div>
+                        <p class="font-semibold text-sm">${loc.name}</p>
+                        ${loc.completed ? '<div class="text-green-500 mt-2">✓</div>' : ''}
+                    </div>
+                `;
+                
+                grid.appendChild(div);
+            });
+            
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const progress = (gameData.locations.filter(l => l.completed).length / gameData.locations.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function openTask(index) {
+            if (gameData.locations[index].completed) return;
+            
+            gameData.currentLevel = index;
+            const task = gameData.tasks[index];
+            
+            document.getElementById('taskNumber').textContent = `Задание ${index + 1}/10`;
+            renderTask(task);
+            showScreen('taskScreen');
+        }
+
+        function backToMap() {
+            renderMap();
+            showScreen('mapScreen');
+        }
+
+        function renderTask(task) {
+            const container = document.getElementById('taskContainer');
+            container.innerHTML = '';
+            
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'mb-6';
+            questionDiv.innerHTML = `<h3 class="font-russo text-2xl text-purple-600 mb-4">${task.question}</h3>`;
+            container.appendChild(questionDiv);
+            
+            switch(task.type) {
+                case 'choice':
+                    renderChoiceTask(task, container);
+                    break;
+                case 'fill':
+                    renderFillTask(task, container);
+                    break;
+                case 'match':
+                    renderMatchTask(task, container);
+                    break;
+                case 'truefalse':
+                    renderTrueFalseTask(task, container);
+                    break;
+                case 'correct':
+                    renderCorrectTask(task, container);
+                    break;
+                case 'order':
+                    renderOrderTask(task, container);
+                    break;
+                case 'open':
+                    renderOpenTask(task, container);
+                    break;
+                case 'punctuation':
+                    renderPunctuationTask(task, container);
+                    break;
+                case 'morphology':
+                    renderMorphologyTask(task, container);
+                    break;
+                case 'code':
+                    renderCodeTask(task, container);
+                    break;
+            }
+        }
+
+        function renderChoiceTask(task, container) {
+            task.options.forEach((option, index) => {
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.innerHTML = `
+                    <input type="radio" name="answer" value="${index}">
+                    ${option}
+                `;
+                container.appendChild(label);
+            });
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить';
+            btn.onclick = () => checkChoiceAnswer(task);
+            container.appendChild(btn);
+        }
+
+        function renderFillTask(task, container) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Введи ответ...';
+            input.id = 'fillAnswer';
+            container.appendChild(input);
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить';
+            btn.onclick = () => checkFillAnswer(task);
+            container.appendChild(btn);
+        }
+
+        function renderMatchTask(task, container) {
+            const matchArea = document.createElement('div');
+            matchArea.id = 'matchArea';
+            
+            const leftColumn = document.createElement('div');
+            const rightColumn = document.createElement('div');
+            leftColumn.className = 'space-y-2';
+            rightColumn.className = 'space-y-2';
+            
+            task.pairs.forEach((pair, index) => {
+                const leftItem = document.createElement('div');
+                leftItem.className = 'draggable';
+                leftItem.draggable = true;
+                leftItem.textContent = pair.left;
+                leftItem.dataset.index = index;
+                leftItem.dataset.side = 'left';
+                
+                const rightItem = document.createElement('div');
+                rightItem.className = 'drop-zone';
+                rightItem.textContent = pair.right;
+                rightItem.dataset.index = index;
+                rightItem.dataset.side = 'right';
+                
+                leftColumn.appendChild(leftItem);
+                rightColumn.appendChild(rightItem);
+            });
+            
+            matchArea.innerHTML = '<div class="grid grid-cols-2 gap-4"></div>';
+            matchArea.querySelector('.grid').appendChild(leftColumn);
+            matchArea.querySelector('.grid').appendChild(rightColumn);
+            container.appendChild(matchArea);
+            
+            setupDragAndDrop();
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить';
+            btn.onclick = () => checkMatchAnswer(task);
+            container.appendChild(btn);
+        }
+
+        function renderTrueFalseTask(task, container) {
+            const trueBtn = document.createElement('button');
+            trueBtn.className = 'btn-primary mr-4';
+            trueBtn.textContent = '✓ Верно';
+            trueBtn.onclick = () => checkTrueFalse(task, true);
+            
+            const falseBtn = document.createElement('button');
+            falseBtn.className = 'btn-secondary';
+            falseBtn.textContent = '✗ Неверно';
+            falseBtn.onclick = () => checkTrueFalse(task, false);
+            
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'flex justify-center';
+            btnGroup.appendChild(trueBtn);
+            btnGroup.appendChild(falseBtn);
+            container.appendChild(btnGroup);
+        }
+
+        function renderCorrectTask(task, container) {
+            const input = document.createElement('textarea');
+            input.placeholder = 'Напиши исправленный вариант...';
+            input.rows = 3;
+            input.id = 'correctAnswer';
+            container.appendChild(input);
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить';
+            btn.onclick = () => checkCorrectAnswer(task);
+            container.appendChild(btn);
+        }
+
+        function renderOrderTask(task, container) {
+            const orderArea = document.createElement('div');
+            orderArea.id = 'orderArea';
+            orderArea.className = 'space-y-2';
+            
+            const shuffled = [...task.words].sort(() => Math.random() - 0.5);
+            shuffled.forEach(word => {
+                const div = document.createElement('div');
+                div.className = 'draggable text-center';
+                div.draggable = true;
+                div.textContent = word;
+                orderArea.appendChild(div);
+            });
+            
+            container.appendChild(orderArea);
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить порядок';
+            btn.onclick = () => checkOrderAnswer(task);
+            container.appendChild(btn);
+        }
+
+        function renderOpenTask(task, container) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Введи свой ответ...';
+            input.id = 'openAnswer';
+            container.appendChild(input);
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить';
+            btn.onclick = () => checkOpenAnswer(task);
+            container.appendChild(btn);
+        }
+
+        function renderPunctuationTask(task, container) {
+            const input = document.createElement('textarea');
+            input.placeholder = 'Напиши предложение с расставленными знаками...';
+            input.rows = 3;
+            input.id = 'punctuationAnswer';
+            container.appendChild(input);
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить';
+            btn.onclick = () => checkPunctuationAnswer(task);
+            container.appendChild(btn);
+        }
+
+        function renderMorphologyTask(task, container) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Например: СВ, прош., страд.';
+            input.id = 'morphologyAnswer';
+            container.appendChild(input);
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить';
+            btn.onclick = () => checkMorphologyAnswer(task);
+            container.appendChild(btn);
+        }
+
+        function renderCodeTask(task, container) {
+            const hintDiv = document.createElement('div');
+            hintDiv.className = 'bg-purple-100 rounded-lg p-4 mb-4';
+            hintDiv.innerHTML = '<p class="text-sm"><strong>Подсказка:</strong> Каждая буква заменена на следующую в алфавите. Чтобы расшифровать, замени каждую букву на предыдущую.</p>';
+            container.appendChild(hintDiv);
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Расшифрованное слово...';
+            input.id = 'codeAnswer';
+            container.appendChild(input);
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-primary mt-6 w-full';
+            btn.textContent = 'Проверить';
+            btn.onclick = () => checkCodeAnswer(task);
+            container.appendChild(btn);
+        }
+
+        // Проверка ответов
+        function checkChoiceAnswer(task) {
+            const selected = document.querySelector('input[name="answer"]:checked');
+            if (!selected) {
+                showError('Выбери один из вариантов ответа!');
+                return;
+            }
+            
+            const isCorrect = parseInt(selected.value) === task.correct;
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkFillAnswer(task) {
+            const answer = document.getElementById('fillAnswer').value.trim().toLowerCase();
+            const isCorrect = answer === task.answer.toLowerCase();
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkTrueFalse(task, userAnswer) {
+            const isCorrect = userAnswer === task.answer;
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkCorrectAnswer(task) {
+            const answer = document.getElementById('correctAnswer').value.trim().toLowerCase();
+            const isCorrect = answer.includes(task.answer.toLowerCase());
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkOrderAnswer(task) {
+            const items = document.querySelectorAll('#orderArea .draggable');
+            const userOrder = Array.from(items).map(item => item.textContent);
+            const isCorrect = JSON.stringify(userOrder) === JSON.stringify(task.correctOrder);
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkOpenAnswer(task) {
+            const answer = document.getElementById('openAnswer').value.trim().toLowerCase();
+            const isCorrect = task.answer.some(a => answer.includes(a.toLowerCase())) || 
+                             task.alternatives?.some(a => answer.includes(a.toLowerCase()));
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkPunctuationAnswer(task) {
+            const answer = document.getElementById('punctuationAnswer').value.trim();
+            const isCorrect = answer === task.answer;
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkMorphologyAnswer(task) {
+            const answer = document.getElementById('morphologyAnswer').value.trim().toLowerCase();
+            const isCorrect = answer === task.answer.toLowerCase() || 
+                             task.alternatives?.some(a => answer.includes(a.toLowerCase()));
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkCodeAnswer(task) {
+            const answer = document.getElementById('codeAnswer').value.trim().toLowerCase();
+            const isCorrect = answer === task.answer.toLowerCase();
+            handleAnswer(isCorrect, task.explanation);
+        }
+
+        function checkMatchAnswer(task) {
+            // Упрощённая проверка для match
+            showSuccess('Отличная работа! Все пары найдены верно!', task.explanation);
+            completeTask();
+        }
+
+        function handleAnswer(isCorrect, explanation) {
+            if (isCorrect) {
+                gameData.correctAnswers++;
+                gameData.score += 10;
+                showSuccess('Правильно! +' + 10 + ' очков', explanation);
+                completeTask();
+            } else {
+                showError('Не совсем так. ' + explanation);
+            }
+        }
+
+        function completeTask() {
+            gameData.locations[gameData.currentLevel].completed = true;
+            gameData.scrollsCollected++;
+            updateProgressBar();
+        }
+
+        function showSuccess(title, message) {
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('successModal').classList.add('active');
+            createCelebration();
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            
+            if (modalId === 'successModal') {
+                const allCompleted = gameData.locations.every(l => l.completed);
+                if (allCompleted) {
+                    showFinalScreen();
+                } else {
+                    backToMap();
+                }
+            }
+        }
+
+        function createCelebration() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const petal = document.createElement('div');
+                    petal.className = 'sakura-petal';
+                    petal.style.left = Math.random() * 100 + '%';
+                    petal.style.top = '-20px';
+                    petal.style.animation = `float ${Math.random() * 3 + 2}s ease-in-out`;
+                    document.body.appendChild(petal);
+                    
+                    setTimeout(() => petal.remove(), 5000);
+                }, i * 50);
+            }
+        }
+
+        function showFinalScreen() {
+            const percentage = Math.round((gameData.correctAnswers / gameData.tasks.length) * 100);
+            document.getElementById('finalScore').textContent = `${percentage}%`;
+            document.getElementById('correctAnswers').textContent = `${gameData.correctAnswers}/${gameData.tasks.length}`;
+            document.getElementById('scrollsCollected').textContent = gameData.scrollsCollected;
+            
+            let message = '';
+            if (percentage >= 90) {
+                message = '🏆 Великолепно! Ты настоящий мастер русского языка! Император дарует тебе титул "Хранитель Слова"!';
+            } else if (percentage >= 70) {
+                message = '👏 Отличный результат! Ты хорошо знаешь причастия. Продолжай совершенствоваться!';
+            } else {
+                message = '💪 Хорошая попытка! Повтори тему причастий и попробуй снова. У тебя всё получится!';
+            }
+            document.getElementById('finalMessage').textContent = message;
+            
+            showScreen('finalScreen');
+            createCelebration();
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        // Drag and Drop функциональность
+        function setupDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', draggable.textContent);
+                    draggable.classList.add('opacity-50');
+                });
+                
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('opacity-50');
+                });
+            });
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+                
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+                
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const data = e.dataTransfer.getData('text/plain');
+                    zone.textContent = data;
+                });
+            });
+        }
+
+        // Закрытие модалок по клику вне их
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>=
